@@ -35,10 +35,85 @@ class AppColors {
   static const Color textPrimary = Color(0xFFF8FAFC);
   static const Color textSecondary = Color(0xFF94A3B8);
   static const Color textMuted = Color(0xFF64748B);
+
+  // Light Mode Palette
+  static const Color lightBackground = Color(0xFFF1F5F9);
+  static const Color lightSurface = Color(0xFFFFFFFF);
+  static const Color lightSurfaceCard = Color(0xFFF8FAFC);
+  static const Color lightTextPrimary = Color(0xFF0F172A);
+  static const Color lightTextSecondary = Color(0xFF475569);
+  static const Color lightBorder = Color(0xFFE2E8F0);
+  static const Color lightSurfaceElevated = Color(0xFFF1F5F9);
 }
 
 class AppTheme {
   AppTheme._();
+
+  static ThemeData get lightTheme {
+    final textTheme = GoogleFonts.plusJakartaSansTextTheme(
+      ThemeData(brightness: Brightness.light).textTheme,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.gold,
+        onPrimary: Colors.white,
+        secondary: AppColors.goldMuted,
+        surface: AppColors.lightSurface,
+        onSurface: AppColors.lightTextPrimary,
+        error: AppColors.danger,
+        surfaceContainer: AppColors.lightSurfaceCard,
+        surfaceContainerHigh: AppColors.lightSurfaceElevated,
+      ),
+      textTheme: textTheme.copyWith(
+        displayLarge: textTheme.displayLarge?.copyWith(
+          color: AppColors.lightTextPrimary,
+          fontWeight: FontWeight.w800,
+        ),
+        bodyLarge: textTheme.bodyLarge?.copyWith(color: AppColors.lightTextPrimary),
+        bodyMedium: textTheme.bodyMedium?.copyWith(color: AppColors.lightTextSecondary),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.lightSurfaceCard,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.lightBorder, width: 1),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.gold,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.lightSurfaceElevated,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.lightBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.lightBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
+        ),
+        labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+        hintStyle: const TextStyle(color: AppColors.textMuted),
+      ),
+    );
+  }
 
   static ThemeData get darkTheme {
     final textTheme = GoogleFonts.plusJakartaSansTextTheme(
@@ -56,6 +131,8 @@ class AppTheme {
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
         error: AppColors.danger,
+        surfaceContainer: AppColors.surfaceCard,
+        surfaceContainerHigh: AppColors.surfaceElevated,
       ),
       textTheme: textTheme.copyWith(
         displayLarge: textTheme.displayLarge?.copyWith(

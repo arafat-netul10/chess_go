@@ -5,13 +5,13 @@ class AppConfig {
   /// Supabase project URL - Replace with your project URL from Supabase dashboard
   static const String supabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',
-    defaultValue: '',
+    defaultValue: 'I have removed the values but stored it',
   );
 
   /// Supabase anon public API key - Replace with your anon key from Supabase dashboard
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: '',
+    defaultValue: 'I have removed the values but stored it',
   );
 
   /// True if Supabase credentials have been configured

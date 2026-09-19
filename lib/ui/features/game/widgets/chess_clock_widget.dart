@@ -46,8 +46,8 @@ class ChessClockWidget extends StatelessWidget {
         color: isActive
             ? (isLowTime
                 ? AppColors.danger.withValues(alpha: 0.18)
-                : AppColors.surfaceElevated)
-            : AppColors.surface,
+                : Theme.of(context).colorScheme.surfaceContainerHigh)
+            : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isActive
@@ -95,10 +95,10 @@ class ChessClockWidget extends StatelessWidget {
                     children: [
                       Text(
                         playerName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       if (isAi) ...[
@@ -149,7 +149,9 @@ class ChessClockWidget extends StatelessWidget {
                 fontFamily: 'monospace',
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: isLowTime ? AppColors.danger : AppColors.textPrimary,
+                color: isLowTime
+                    ? AppColors.danger
+                    : Theme.of(context).colorScheme.onSurface,
                 letterSpacing: 1.0,
               ),
             ),

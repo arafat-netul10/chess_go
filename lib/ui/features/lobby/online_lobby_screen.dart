@@ -134,7 +134,7 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceCard,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: const Row(
           children: [
             Icon(Icons.cloud_outlined, color: AppColors.gold),
@@ -159,21 +159,21 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.textPrimary, size: 20),
-          onPressed: () => context.go('/'),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).colorScheme.onSurface, size: 20),
+          onPressed: () => context.go('/home'),
         ),
-        title: const Text(
+        title: Text(
           'Online Play',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -223,24 +223,24 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.surfaceCard,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: const Color(0xFF2E384D)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.public_rounded,
+                      const Icon(Icons.public_rounded,
                           color: AppColors.gold, size: 24),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         'Quick Matchmaking',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -298,24 +298,24 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.surfaceCard,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: const Color(0xFF2E384D)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(Icons.group_rounded,
+                      const Icon(Icons.group_rounded,
                           color: AppColors.goldLight, size: 24),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         'Play with Friend',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -335,7 +335,7 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceElevated,
+                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                             color: AppColors.gold.withValues(alpha: 0.4)),
@@ -406,12 +406,12 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
                       ElevatedButton(
                         onPressed: _isJoining ? null : _joinRoom,
                         child: _isJoining
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: AppColors.background,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
                             : const Text('Join'),
@@ -444,7 +444,7 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.gold.withValues(alpha: 0.15)
-                : AppColors.surfaceCard,
+                : Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isSelected ? AppColors.gold : const Color(0xFF2A3447),
@@ -464,7 +464,9 @@ class _OnlineLobbyScreenState extends ConsumerState<OnlineLobbyScreen> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: isSelected ? AppColors.gold : AppColors.textPrimary,
+                  color: isSelected
+                      ? AppColors.gold
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(

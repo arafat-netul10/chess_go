@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:chess_go/ui/features/game/view_models/game_state_notifier.dart';
 import 'config/app_routes.dart';
 import 'data/services/supabase_service.dart';
 import 'ui/core/theme/app_theme.dart';
@@ -17,15 +18,19 @@ void main() async {
   );
 }
 
-class ChessGoApp extends StatelessWidget {
+class ChessGoApp extends ConsumerWidget {
   const ChessGoApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp.router(
       title: 'ChessGo',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       routerConfig: appRouter,
     );
   }

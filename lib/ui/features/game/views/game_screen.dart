@@ -34,7 +34,7 @@ class GameScreen extends ConsumerWidget {
               );
             },
             onHome: () {
-              context.go('/');
+              context.go('/home');
             },
           ),
         );
@@ -50,21 +50,21 @@ class GameScreen extends ConsumerWidget {
     final bottomPlayerName = _getBottomPlayerName(state);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.textPrimary, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).colorScheme.onSurface, size: 20),
           onPressed: () => _confirmExit(context),
         ),
         title: Text(
           _getModeTitle(state),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -170,9 +170,9 @@ class GameScreen extends ConsumerWidget {
             // In-Game Controls Action Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
-                border: Border(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                border: const Border(
                   top: BorderSide(color: Color(0xFF1E2638), width: 1),
                 ),
               ),
@@ -243,7 +243,7 @@ class GameScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceCard,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: const Text('Leave Game?'),
         content: const Text(
           'Leaving now will abandon the current match.',
@@ -257,7 +257,7 @@ class GameScreen extends ConsumerWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              context.go('/');
+              context.go('/home');
             },
             child: const Text('Leave'),
           ),
@@ -270,7 +270,7 @@ class GameScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceCard,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: const Text('Resign Game?'),
         content: const Text(
           'Are you sure you want to resign and forfeit this match?',
@@ -298,7 +298,7 @@ class GameScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceCard,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: const Text('Offer Draw?'),
         content: const Text(
           'Do you want to agree on a draw?',
@@ -329,7 +329,7 @@ class GameScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceCard,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         title: const Text('Restart Match?'),
         content: const Text(
           'This will reset the chess board and clocks.',
@@ -359,7 +359,7 @@ class GameScreen extends ConsumerWidget {
   void _showMoveHistory(BuildContext context, ChessGameState state) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surfaceCard,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -372,12 +372,12 @@ class GameScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Move History (PGN)',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   IconButton(
@@ -422,9 +422,9 @@ class GameScreen extends ConsumerWidget {
                               Expanded(
                                 child: Text(
                                   whiteMove.san,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:chess_go/domain/models/user_profile.dart';
 import 'package:chess_go/ui/core/theme/app_theme.dart';
-import '../game/view_models/game_state_notifier.dart';
+import 'package:chess_go/ui/features/game/view_models/game_state_notifier.dart';
+
 
 final leaderboardProvider =
     FutureProvider.autoDispose<List<UserProfile>>((ref) async {
@@ -16,24 +17,25 @@ class LeaderboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(supabaseAuthStateProvider);
     final leaderboardAsync = ref.watch(leaderboardProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: AppColors.textPrimary, size: 20),
-          onPressed: () => context.go('/'),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).colorScheme.onSurface, size: 20),
+          onPressed: () => context.go('/home'),
         ),
-        title: const Text(
+        title: Text(
           'Global Leaderboard',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -58,7 +60,7 @@ class LeaderboardScreen extends ConsumerWidget {
         data: (players) {
           return RefreshIndicator(
             color: AppColors.gold,
-            backgroundColor: AppColors.surfaceCard,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
             onRefresh: () async {
               ref.invalidate(leaderboardProvider);
             },
@@ -124,7 +126,7 @@ class _LeaderboardRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: rank <= 3
@@ -141,7 +143,7 @@ class _LeaderboardRow extends StatelessWidget {
           // Player Avatar Circle
           CircleAvatar(
             radius: 18,
-            backgroundColor: AppColors.surfaceElevated,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
             child: Text(
               player.displayName.isNotEmpty
                   ? player.displayName[0].toUpperCase()
@@ -161,10 +163,10 @@ class _LeaderboardRow extends StatelessWidget {
               children: [
                 Text(
                   player.displayName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -183,7 +185,7 @@ class _LeaderboardRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.surfaceElevated,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: const Color(0xFF333E54)),
             ),

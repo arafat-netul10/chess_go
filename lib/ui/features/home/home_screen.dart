@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:chess_go/domain/models/chess_game_state.dart';
 import 'package:chess_go/ui/core/theme/app_theme.dart';
 import '../game/view_models/game_state_notifier.dart';
-import '../game/widgets/chess_piece_widget.dart';
 import '../auth/auth_modal.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -43,11 +42,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Watch authStateProvider to trigger clean UI rebuilds instantly upon sign in / sign out status updates
+    ref.watch(supabaseAuthStateProvider);
     final supabase = ref.watch(supabaseServiceProvider);
     final user = supabase.currentUser;
+    final profileAsync = ref.watch(userProfileProvider);
+    final userProfile = profileAsync.value;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -61,17 +64,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceElevated,
+                          color: Theme.of(context).colorScheme.surfaceContainerHigh,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                               color: AppColors.gold.withValues(alpha: 0.3)),
                         ),
-                        child: const ChessPieceWidget(piece: 'K', size: 28),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/images/app_icon.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 12),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -80,10 +90,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.5,
-                              color: AppColors.textPrimary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
-                          Text(
+                          const Text(
                             'Play Offline & Online',
                             style: TextStyle(
                               fontSize: 12,
@@ -98,13 +108,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   // Auth / Profile Button
                   InkWell(
-                    onTap: () => AuthModal.show(context),
+                    onTap: () {
+                      if (user != null) {
+                        context.go('/profile');
+                      } else {
+                        AuthModal.show(context);
+                      }
+                    },
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceElevated,
+                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: user != null
@@ -126,14 +142,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const SizedBox(width: 6),
                           Text(
                             user != null
-                                ? (user.email?.split('@').first ?? 'Account')
+                                ? (userProfile?.displayName ??
+                                    user.email?.split('@').first ??
+                                    'Profile')
                                 : 'Sign In',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               color: user != null
                                   ? AppColors.gold
-                                  : AppColors.textPrimary,
+                                  : Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -160,7 +178,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceCard,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFF262E3E)),
                 ),
@@ -170,17 +188,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.smart_toy_rounded,
+                            const Icon(Icons.smart_toy_rounded,
                                 color: AppColors.goldLight, size: 24),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               'Play vs AI Bot',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -189,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceElevated,
+                            color: Theme.of(context).colorScheme.surfaceContainerHigh,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Text(
@@ -268,7 +286,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 icon: Icons.emoji_events_rounded,
                 accentColor: AppColors.gold,
                 badgeText: 'TOP 50',
-                onTap: () => context.go('/leaderboard'),
+                onTap: () {
+                  if (supabase.isAuthenticated) {
+                    context.go('/leaderboard');
+                  } else {
+                    AuthModal.show(context);
+                  }
+                },
               ),
             ],
           ),
@@ -291,11 +315,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceCard,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF262E3E)),
-        ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF262E3E)),
+      ),
         child: Row(
           children: [
             Container(
@@ -315,10 +339,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -326,7 +350,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceElevated,
+                          color: Theme.of(context).colorScheme.surfaceContainerHigh,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -376,7 +400,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         selected: isSelected,
         selectedColor: AppColors.gold.withValues(alpha: 0.2),
-        backgroundColor: AppColors.surfaceElevated,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(
@@ -399,7 +423,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.gold.withValues(alpha: 0.15)
-              : AppColors.surfaceElevated,
+              : Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected ? AppColors.gold : const Color(0xFF2E384D),

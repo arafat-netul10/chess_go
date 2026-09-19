@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chess/chess.dart' as chess;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../domain/models/chess_game_state.dart';
+import '../../../../domain/models/user_profile.dart';
 import '../../../../domain/engine/chess_ai.dart';
 import '../../../../data/services/audio_service.dart';
 import '../../../../data/services/supabase_service.dart';
@@ -14,8 +17,46 @@ final audioServiceProvider = Provider<AudioService>((ref) {
   return audio;
 });
 
-final supabaseServiceProvider =
-    Provider<SupabaseService>((ref) => SupabaseService());
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.dark);
+
+final supabaseServiceProvider = Provider<SupabaseService>((ref) => SupabaseService());
+
+final supabaseAuthStateProvider = StreamProvider<AuthState>((ref) {
+  final supabase = ref.watch(supabaseServiceProvider);
+  return supabase.authStateChanges ?? const Stream.empty();
+});
+
+final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
+  // Watch authState to trigger re-fetch on login status changes
+  ref.watch(supabaseAuthStateProvider);
+  final supabase = ref.watch(supabaseServiceProvider);
+  final user = supabase.currentUser;
+  if (user == null) return null;
+
+  try {
+    var profile = await supabase.fetchProfile(user.id);
+    if (profile == null) {
+      final metadataName = user.userMetadata?['username'] ?? user.userMetadata?['full_name'];
+      final fallbackUsername = metadataName ?? user.email?.split('@').first ?? 'Player';
+      
+      final newProfile = UserProfile(
+        id: user.id,
+        username: fallbackUsername,
+        displayName: fallbackUsername,
+      );
+      await supabase.updateProfile(newProfile);
+      return newProfile;
+    }
+    return profile;
+  } catch (_) {
+    final fallbackUsername = user.email?.split('@').first ?? 'Player';
+    return UserProfile(
+      id: user.id,
+      username: fallbackUsername,
+      displayName: fallbackUsername,
+    );
+  }
+});
 
 final gameStateProvider =
     StateNotifierProvider<GameStateNotifier, ChessGameState>((ref) {

@@ -116,10 +116,10 @@ class _AuthModalState extends ConsumerState<AuthModal> {
 
     return Container(
       padding: EdgeInsets.fromLTRB(24, 24, 24, bottomInset + 24),
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        border: const Border(
           top: BorderSide(color: Color(0xFF2E384D), width: 1.5),
         ),
       ),
@@ -144,10 +144,10 @@ class _AuthModalState extends ConsumerState<AuthModal> {
             // Title
             Text(
               _isSignUp ? 'Create ChessGo Account' : 'Welcome to ChessGo',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 6),
@@ -216,11 +216,12 @@ class _AuthModalState extends ConsumerState<AuthModal> {
             ElevatedButton(
               onPressed: _isLoading ? null : _submit,
               child: _isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: AppColors.background),
+                          strokeWidth: 2,
+                          color: Theme.of(context).colorScheme.onPrimary),
                     )
                   : Text(_isSignUp ? 'Sign Up' : 'Sign In'),
             ),
